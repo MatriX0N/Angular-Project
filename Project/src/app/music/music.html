@@ -1,6 +1,56 @@
 <div class="search-bar">
-    <input #searchInput type="text" placeholder="Що ви хочете відтворити?" />
-    <button class="search-btn">
-        <img src="assets/lupa.png" alt="лупа">
+  <input
+    type="text"
+    placeholder="Що ви хочете відтворити?"
+    [(ngModel)]="query"
+    (keyup.enter)="onSearch()"
+  />
+  <button class="search-btn" (click)="onSearch()">
+    <img src="assets/lupa.png" alt="лупа" />
+  </button>
+</div>
+
+<!-- Результати -->
+<div class="results" *ngIf="tracks.length > 0; else noResults">
+  <div class="track" *ngFor="let track of tracks">
+    <img [src]="track.artworkUrl100" alt="Обкладинка" class="cover" />
+    <div class="info">
+      <h3>{{ track.trackName }}</h3>
+      <p>{{ track.artistName }}</p>
+    </div>
+
+    <button class="play-btn" (click)="playTrack(track)">
+      <img
+        [src]="
+          currentTrack === track && isPlaying
+            ? 'assets/pause.png'
+            : 'assets/play.png'
+        "
+        alt="Play/Pause"
+      />
     </button>
   </div>
+</div>
+
+<!-- Якщо немає результатів -->
+<ng-template #noResults>
+  <p class="no-results" *ngIf="searchDone">Нічого не знайдено 😕</p>
+</ng-template>
+
+<!-- Нижній плеєр -->
+<div class="player-bar" *ngIf="currentTrack">
+  <div class="player-info">
+    <img [src]="currentTrack.artworkUrl100" alt="Обкладинка" />
+    <div>
+      <h4>{{ currentTrack.trackName }}</h4>
+      <p>{{ currentTrack.artistName }}</p>
+    </div>
+  </div>
+
+  <audio
+    id="audio-player"
+    controls
+    (ended)="onAudioEnded()"
+    class="audio-element"
+  ></audio>
+</div>
