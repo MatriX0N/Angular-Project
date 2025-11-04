@@ -11,9 +11,8 @@ export class MusicService {
 
   constructor(private http: HttpClient) {}
 
-  searchTracks(query: string): Observable<any[]> {
-    const url = `${this.apiUrl}?term=${encodeURIComponent(query)}&media=music&limit=5`;
-
+  searchTracks(query: string, limit: number = 10): Observable<any[]> {
+    const url = `${this.apiUrl}?term=${encodeURIComponent(query)}&media=music&limit=${limit}`;
     return this.http.get<any>(url).pipe(
       map(response => response.results || [])
     );

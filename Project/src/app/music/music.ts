@@ -14,17 +14,20 @@ export class Music implements OnInit {
   query = '';
   searchDone = false;
   isPlaying = false;
-
   currentTrack: any = null;
 
-  // 🔥 окремі масиви для різних жанрів
+  // 🔥 жанри
   popularTracks: any[] = [];
   rockTracks: any[] = [];
   popTracks: any[] = [];
 
+  // 🆕 результати пошуку
+  searchResults: any[] = [];
+
   constructor(private musicService: MusicService) {}
 
   ngOnInit() {
+    // жанри завантажуються лише при старті
     this.loadGenre('top hits', 'popularTracks');
     this.loadGenre('rock', 'rockTracks');
     this.loadGenre('pop', 'popTracks');
@@ -32,40 +35,37 @@ export class Music implements OnInit {
 
   /** Завантаження треків за жанром */
   loadGenre(term: string, target: 'popularTracks' | 'rockTracks' | 'popTracks') {
-    this.musicService.searchTracks(term).subscribe({
+    this.musicService.searchTracks(term, 20).subscribe({
       next: (tracks) => {
         this[target] = tracks.slice(0, 8);
-        this.searchDone = true;
       },
       error: (err) => console.error(`Помилка при завантаженні ${term}:`, err)
     });
   }
 
-  /** Пошук */
+  /** 🔍 Пошук */
   onSearch() {
     const searchTerm = this.query.trim();
     if (!searchTerm) {
-      this.popularTracks = [];
-      this.searchDone = true;
+      this.searchResults = [];
+      this.searchDone = false;
       return;
     }
 
-    this.musicService.searchTracks(searchTerm).subscribe({
+    this.musicService.searchTracks(searchTerm, 25).subscribe({
       next: (tracks) => {
-        this.popularTracks = tracks;
-        this.rockTracks = [];
-        this.popTracks = [];
+        this.searchResults = tracks;
         this.searchDone = true;
       },
       error: (err) => {
         console.error('❌ Помилка під час пошуку:', err);
-        this.popularTracks = [];
+        this.searchResults = [];
         this.searchDone = true;
       }
     });
   }
 
-  /** Програвання */
+  /** ▶️ Програвання */
   playTrack(track: any) {
     if (this.currentTrack === track && this.isPlaying) {
       this.pauseTrack();

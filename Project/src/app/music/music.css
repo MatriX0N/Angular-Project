@@ -134,16 +134,32 @@
   font-weight: 600;
 }
 
-/* === Сітка карток === */
 .results-grid {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 25px;
+  flex-wrap: nowrap;              /* ❌ не переносимо на новий рядок */
+  overflow-x: auto;               /* ✅ додаємо горизонтальний скрол */
+  scroll-behavior: smooth;        /* плавний скрол */
+  gap: 20px;                      /* відстань між картками */
+  padding-bottom: 10px;           /* щоб не обтинало тінь */
+}
+
+/* ховаємо стандартний скролбар, щоб було красиво */
+.results-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.results-grid::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 4px;
+}
+
+.results-grid::-webkit-scrollbar-thumb:hover {
+  background-color: #666;
 }
 
 /* === Картки треків === */
 .track-card {
+  flex: 0 0 200px; 
   background-color: #242424;
   border-radius: 15px;
   text-align: center;
@@ -247,3 +263,75 @@
   margin-top: 20px;
 }
 
+/* === Результати пошуку (вертикальний список) === */
+.search-results {
+  background-color: #181818;
+  padding: 30px 40px;
+}
+
+.search-results h2 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.search-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  background-color: #242424;
+  border-radius: 12px;
+  padding: 12px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-item:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.01);
+}
+
+.search-cover {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.search-info {
+  flex: 1;
+}
+
+.search-info h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 18px;
+}
+
+.search-info p {
+  margin: 4px 0 0;
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.search-item .play-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.search-item .play-btn:hover {
+  transform: scale(1.2);
+}
+
+.search-item .play-btn img {
+  width: 28px;
+  height: 28px;
+}
