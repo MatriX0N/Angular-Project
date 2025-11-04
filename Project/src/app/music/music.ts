@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MusicService } from './music.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,38 +10,62 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './music.html',
   styleUrl: './music.css'
 })
-export class Music {
+export class Music implements OnInit {
   query = '';
-  tracks: any[] = [];
   searchDone = false;
-
-  currentTrack: any = null; // ✅ поточний трек для нижнього плеєра
   isPlaying = false;
+
+  currentTrack: any = null;
+
+  // 🔥 окремі масиви для різних жанрів
+  popularTracks: any[] = [];
+  rockTracks: any[] = [];
+  popTracks: any[] = [];
 
   constructor(private musicService: MusicService) {}
 
+  ngOnInit() {
+    this.loadGenre('top hits', 'popularTracks');
+    this.loadGenre('rock', 'rockTracks');
+    this.loadGenre('pop', 'popTracks');
+  }
+
+  /** Завантаження треків за жанром */
+  loadGenre(term: string, target: 'popularTracks' | 'rockTracks' | 'popTracks') {
+    this.musicService.searchTracks(term).subscribe({
+      next: (tracks) => {
+        this[target] = tracks.slice(0, 8);
+        this.searchDone = true;
+      },
+      error: (err) => console.error(`Помилка при завантаженні ${term}:`, err)
+    });
+  }
+
+  /** Пошук */
   onSearch() {
     const searchTerm = this.query.trim();
     if (!searchTerm) {
-      this.tracks = [];
+      this.popularTracks = [];
       this.searchDone = true;
       return;
     }
 
     this.musicService.searchTracks(searchTerm).subscribe({
       next: (tracks) => {
-        this.tracks = tracks;
+        this.popularTracks = tracks;
+        this.rockTracks = [];
+        this.popTracks = [];
         this.searchDone = true;
-        console.log('🎵 Знайдені треки:', tracks);
       },
       error: (err) => {
         console.error('❌ Помилка під час пошуку:', err);
-        this.tracks = [];
+        this.popularTracks = [];
         this.searchDone = true;
       }
     });
   }
 
+  /** Програвання */
   playTrack(track: any) {
     if (this.currentTrack === track && this.isPlaying) {
       this.pauseTrack();

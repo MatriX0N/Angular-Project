@@ -1,3 +1,4 @@
+<!-- Пошук -->
 <div class="search-bar">
   <input
     type="text"
@@ -10,34 +11,78 @@
   </button>
 </div>
 
-<!-- Результати -->
-<div class="results" *ngIf="tracks.length > 0; else noResults">
-  <div class="track" *ngFor="let track of tracks">
-    <img [src]="track.artworkUrl100" alt="Обкладинка" class="cover" />
-    <div class="info">
+<div
+  class="main-section"
+  [style.padding-bottom.px]="currentTrack ? 120 : 0"
+>
+
+<!-- 🔥 Популярне -->
+<div class="genre-section" *ngIf="popularTracks.length > 0">
+  <h2>🎧 Популярне</h2>
+  <div class="results-grid">
+    <div class="track-card" *ngFor="let track of popularTracks">
+      <img [src]="track.artworkUrl100" alt="Обкладинка" class="cover" />
       <h3>{{ track.trackName }}</h3>
       <p>{{ track.artistName }}</p>
+      <button class="play-btn" (click)="playTrack(track)">
+        <img
+          [src]="
+            currentTrack === track && isPlaying
+              ? 'assets/pause.png'
+              : 'assets/play.png'
+          "
+          alt="Play/Pause"
+        />
+      </button>
     </div>
-
-    <button class="play-btn" (click)="playTrack(track)">
-      <img
-        [src]="
-          currentTrack === track && isPlaying
-            ? 'assets/pause.png'
-            : 'assets/play.png'
-        "
-        alt="Play/Pause"
-      />
-    </button>
   </div>
 </div>
 
-<!-- Якщо немає результатів -->
-<ng-template #noResults>
-  <p class="no-results" *ngIf="searchDone">Нічого не знайдено 😕</p>
-</ng-template>
+<!-- 🔥 Рок -->
+<div class="genre-section" *ngIf="rockTracks.length > 0">
+  <h2>🎸 Рок</h2>
+  <div class="results-grid">
+    <div class="track-card" *ngFor="let track of rockTracks">
+      <img [src]="track.artworkUrl100" alt="Обкладинка" class="cover" />
+      <h3>{{ track.trackName }}</h3>
+      <p>{{ track.artistName }}</p>
+      <button class="play-btn" (click)="playTrack(track)">
+        <img
+          [src]="
+            currentTrack === track && isPlaying
+              ? 'assets/pause.png'
+              : 'assets/play.png'
+          "
+          alt="Play/Pause"
+        />
+      </button>
+    </div>
+  </div>
+</div>
 
-<!-- Нижній плеєр -->
+<!-- 🔥 Поп -->
+<div class="genre-section" *ngIf="popTracks.length > 0">
+  <h2>💃 Поп</h2>
+  <div class="results-grid">
+    <div class="track-card" *ngFor="let track of popTracks">
+      <img [src]="track.artworkUrl100" alt="Обкладинка" class="cover" />
+      <h3>{{ track.trackName }}</h3>
+      <p>{{ track.artistName }}</p>
+      <button class="play-btn" (click)="playTrack(track)">
+        <img
+          [src]="
+            currentTrack === track && isPlaying
+              ? 'assets/pause.png'
+              : 'assets/play.png'
+          "
+          alt="Play/Pause"
+        />
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Плеєр -->
 <div class="player-bar" *ngIf="currentTrack">
   <div class="player-info">
     <img [src]="currentTrack.artworkUrl100" alt="Обкладинка" />
